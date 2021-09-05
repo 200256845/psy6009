@@ -276,3 +276,51 @@ ha_plot +
   scale_colour_manual(values = c("#A58AFF", "#00B6EB")) # Code to chose the data point colours
 
 ggsave(here("figs", "covid_ha_zero.jpg")) # Code to save figure
+
+#### ----
+# Conclusion calculations
+
+(ha_2016 + ha_2017 + ha_2018)/3
+## [1] 58.68264
+
+abs_pf_2016 <- 14.40271
+abs_pf_2017 <- -0.42455
+abs_pf_2018 <- 0.54736
+abs_pf_2019 <- 0.15067
+abs_pf_zero <- 2.31639
+abs_pf_res <- 2.64222
+
+abs_pf_2017 <- abs_pf_2016 + abs_pf_2017
+## [1] 13.97816
+
+abs_pf_2018 <- abs_pf_2016 + abs_pf_2018
+## [1] 14.95007
+
+abs_pf_2019 <- abs_pf_2016 + abs_pf_2019
+## [1] 14.55338
+
+abs_pf_zero <- abs_pf_2016 + abs_pf_zero
+## [1] 16.7191
+
+abs_pf_res <- abs_pf_2016 + abs_pf_res
+## [1] 17.04493
+
+(abs_pf_2016 + abs_pf_2017 + abs_pf_2018 + abs_pf_2019)/4
+## [1] 14.47108
+
+odds_2016 <- -0.58638
+odds_2017 <-  0.00860
+odds_2018 <-  0.03107
+odds_2019 <- -0.13117
+odds_zero <-  0.42845
+odds_res  <-  0.46331
+
+odds_2017 <- odds_2016 + odds_2017
+odds_2018 <- odds_2016 + odds_2018
+odds_2019 <- odds_2016 + odds_2019
+
+(odds_2016 + odds_2017 + odds_2018)/3
+## [1] -0.5731567
+
+odds_zero <- odds_2016 + odds_zero
+odds_res  <- odds_2016 + odds_res
