@@ -1,18 +1,21 @@
+# Descriptive analyses
+
 # Packages
 library(here)
 library(dplyr)
 library(ggplot2)
 library(tidyverse)
 
-# The descriptive analyses are conducted below
+# Note the descriptive analyses only utilize home data
 
-# 2016-17, 2017-18 and 2018-19 NBA HA
-
-# Read in the data
+# Read in the data (total_basic_box_scores.csv)
 box <- read.csv(here("data", "processed", "total_basic_box_scores.csv"), row.names = "X")
 
 # Retain the home data
 box <- filter(box, venue == "Home")
+
+# Visualisation one
+# 2016-17, 2017-18 and 2018-19 NBA HA
 
 # Separate the seasons
 box_2016 <- filter(box, season == "2016-17")
@@ -44,11 +47,11 @@ table(box_2018$home_win)
 ha_2018 <- (775/1312)*100
 ## [1] 59.07012
 
-# Create HA, season and order objects
+# Create a HA and season object
 ha <- c(ha_2016, ha_2017, ha_2018)
 season <- c("2016-17", "2017-18", "2018-19")
 
-# Create a df utilizing the ha, season and order objects
+# Create a df utilizing the ha and season objects
 df <- data.frame(season, ha)
 
 # Create a HA ggplot
@@ -61,11 +64,12 @@ ha_plot +
   theme_bw() + # Code to add a nice looking theme
   labs(x = "Season", y = "Home Win Percentage") +
   ylim(50, 70) + # Code to determine the min and max values of the Y axis
-  scale_colour_manual(values = c("#F8766D", "#C49A00", "#53B400")) + # Code to chose the data point colours
-  theme(legend.position = "none") # Code to remove the legend
+  scale_colour_manual(name = "Season", values = c("#F8766D", "#C49A00", "#53B400")) + # Code to chose the data point colours
+  guides(color = guide_legend(reverse = TRUE)) # Code to reverse the order of the legend
 
 ggsave(here("figs", "pre_covid_ha.jpg"), height = 3.5) # Code to save figure
 
+# Visualisation two
 # 2016-17, 2017-18 and 2018-19 NBA HA, per Team
 
 # Determine HA for each team separately (per season)
@@ -103,6 +107,7 @@ ha_plot +
 
 ggsave(here("figs", "pre_covid_ha_per_team.jpg")) # Code to save figure
 
+# Visualisation three
 # 2019-20 and 2020-21 NBA HA
 
 # Separate the seasons
@@ -150,14 +155,14 @@ ha_2020 <- (272/478)*100
 # Create HA, season and order objects
 ha <- c(ha_2019, ha_2019_b, ha_2020_a, ha_2020)
 season <- c("2019-20", "2019-20", "2020-21", "2020-21")
-order <- c("Pre Covid-19","NBA Bubble", "Zero Spectators", "Crowd Size Restrictions")
+order <- c("Pre COVID-19","NBA Bubble", "Zero Spectators", "Crowd Size Restrictions")
 
 # Create a df utilizing the ha, season and order objects
 df <- data.frame(season, ha, order)
 
-# Ensure that the order columns stays in the correct order
+# Ensure that the order column stays in the correct order
 df$order <- factor(df$order, 
-                   levels = c("Pre Covid-19", "NBA Bubble",
+                   levels = c("Pre COVID-19", "NBA Bubble",
                               "Zero Spectators", "Crowd Size Restrictions"))
 
 # Create a HA ggplot
@@ -169,12 +174,13 @@ ha_plot +
   coord_flip() + # Code to flip the X and Y axis
   theme_bw() + # Code to add in a nice looking theme
   labs(x = "Season", y = "Home Win Percentage") +
-  ylim(50, 70) + # Code to determine the min and max values of the Y axis
-  scale_colour_manual(values = c("#FB61D7", "#00C094", "#00B6EB", "#A58AFF")) + # Code to chose the data point colours
-  theme(legend.title = element_blank()) # Code to remove the legend title
+  ylim(50, 70) + # Code to determine the min and max values of the Y axis +
+  scale_colour_manual(name = "Sample", values = c("#FB61D7", "#00C094", "#00B6EB", "#A58AFF")) +  # Code to chose the data point colours
+  guides(color = guide_legend(reverse = TRUE)) # Code to reverse the order of the legend
 
 ggsave(here("figs", "covid_ha.jpg"), height = 3.5) # Code to save figure
 
+# Visualisation four
 # 2019-20 NBA HA, per Team
 
 # Determine HA for each team separately
@@ -226,6 +232,7 @@ ha_plot +
 
 ggsave(here("figs", "covid_ha_bubble.jpg")) # Code to save figure
 
+# Visualisation five
 # 2020-21 NBA HA, per Team
 
 # Determine HA for each team separately
@@ -270,7 +277,7 @@ ha_plot +
   coord_flip() + # Code to flip the X and Y axis
   theme_bw() + # Code to add in a nice looking theme
   labs(x = "Team", y = "Home Win Percentage") +
-  theme(legend.position="none") +
+  theme(legend.position="none") + # Code to remove the legend
   ylim(0, 100) + # for consistency 0 and 100 was used
   theme(axis.title.y = element_blank()) + # Code to remove the y axis title
   scale_colour_manual(values = c("#A58AFF", "#00B6EB")) # Code to chose the data point colours
@@ -278,49 +285,8 @@ ha_plot +
 ggsave(here("figs", "covid_ha_zero.jpg")) # Code to save figure
 
 #### ----
-# Conclusion calculations
+# Figure 34 note calculation
 
+# Pre COVID-19 the average home win percentage was
 (ha_2016 + ha_2017 + ha_2018)/3
 ## [1] 58.68264
-
-abs_pf_2016 <- 14.40271
-abs_pf_2017 <- -0.42455
-abs_pf_2018 <- 0.54736
-abs_pf_2019 <- 0.15067
-abs_pf_zero <- 2.31639
-abs_pf_res <- 2.64222
-
-abs_pf_2017 <- abs_pf_2016 + abs_pf_2017
-## [1] 13.97816
-
-abs_pf_2018 <- abs_pf_2016 + abs_pf_2018
-## [1] 14.95007
-
-abs_pf_2019 <- abs_pf_2016 + abs_pf_2019
-## [1] 14.55338
-
-abs_pf_zero <- abs_pf_2016 + abs_pf_zero
-## [1] 16.7191
-
-abs_pf_res <- abs_pf_2016 + abs_pf_res
-## [1] 17.04493
-
-(abs_pf_2016 + abs_pf_2017 + abs_pf_2018 + abs_pf_2019)/4
-## [1] 14.47108
-
-odds_2016 <- -0.58638
-odds_2017 <-  0.00860
-odds_2018 <-  0.03107
-odds_2019 <- -0.13117
-odds_zero <-  0.42845
-odds_res  <-  0.46331
-
-odds_2017 <- odds_2016 + odds_2017
-odds_2018 <- odds_2016 + odds_2018
-odds_2019 <- odds_2016 + odds_2019
-
-(odds_2016 + odds_2017 + odds_2018)/3
-## [1] -0.5731567
-
-odds_zero <- odds_2016 + odds_zero
-odds_res  <- odds_2016 + odds_res

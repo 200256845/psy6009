@@ -3,7 +3,7 @@ Where did the data come from?
 The data was scrapped from https://www.basketball-reference.com/ through two custom R-scripts (schedule_and_results.R and total_basic_box_scores.R).
 
 What is in the data?
-The data sets contains NBA games from the 2016-17, 2017-18, 2018-19, 2019-20 and 2020-21 seasons.
+The data sets contain information on NBA games from the 2016-17, 2017-18, 2018-19, 2019-20 and 2020-21 seasons.
 
 What are the variables in the raw folder?
 
@@ -60,7 +60,7 @@ points_home = points of the home team
 attendance = attendance
 home_win = Did the home team win? 0 = home team lost; 1 = home team won
 point_difference = points home - points away
-abs_point_dif = absolute values of point difference (i.e., all point difference values are made positive)
+abs_point_dif = absolute values of point difference (i.e., all point difference values were made positive)
 season = season of that particular game
 win_percentage = (the number of games won by a home team divided by their total number of games played)*100
 
@@ -71,8 +71,8 @@ zero = Is this a 2020-21 zero attendance game? Pre-restrictions (no); TRUE (yes)
 attendance = attendance
 home_win = Did the home team win? 0 = home team lost; 1 = home team won
 point_difference = points home - points away
-abs_point_dif = absolute values of point difference (i.e., all point difference values are made positive)
-season = season
+abs_point_dif = absolute values of point difference (i.e., all point difference values were made positive)
+season = season of that particular game
 win_percentage = (the number of games won by a home team divided by their total number of games played)*100
 venue = Home or Away
 fg = field goals
@@ -95,8 +95,8 @@ pf = personal fouls
 points = points
 team = team that the data belongs to
 
-total_box_scores_glm_lm.csv contains the same variables and definition as total_basic_box_scores.csv
-THERE IS HOWEVER ONE EXCEPTION
+total_box_scores_glm_lm.csv contains the same variables and utilizes the same definitions as total_basic_box_scores.csv
+HOWEVER THERE IS ONE EXCEPTION
 season in total_box_scores_glm_lm.csv consists of 2016-17, 2017-18, 2018-19, 2019-20 (pre COVID-19 games in the 2019-20 season), 
 2019-21 (COVID-19 games that did not have any attendees (includes NBA bubbles games)) and 2020-21 (post COVID-19 games that had at least 10% maximum capacity)
 

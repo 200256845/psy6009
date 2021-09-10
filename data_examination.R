@@ -1,3 +1,5 @@
+# Data examination
+
 # Packages
 library(here)
 library(dplyr)
@@ -5,11 +7,7 @@ library(ggplot2)
 library(tidyverse)
 library(Hmisc)
 
-##### ----
-# Examine the correlation matrix
-
-# Clean the environment
-rm(list = ls())
+# Correlation matrix
 
 # Read in the data (total_box_scores_glm_lm.csv)
 box <- read.csv(here("data", "processed", "total_box_scores_glm_lm.csv"), row.names = "X")
@@ -20,7 +18,7 @@ box_numeric <- box[c(4, 11:27)]
 # Create the correlation matrix
 box.cor <- cor(box_numeric)
 
-# Create dfs of the correlation matrix
+# Create a correlation matrix df
 cor_box <- as.data.frame(box.cor)
 
 # Retain two digits per correlation
@@ -33,24 +31,22 @@ names(cor_box) <- c(
   
 )
 
-# Export the dfs at text
+# Export the df as text
 write.table(cor_box, file = "cor_box.txt", sep = ",", quote = FALSE, row.names = F)
 
-# There appears to some issues in the correlations
+# Note there are some issues in the correlations
 # FG are highly correlated with FG%
 # 3P are highly correlated with 3P%
 # FT are highly correlated with FTA
 # DRB are highly correlated with TRB
 # FG are highly correlated with AST
 
-##### ----
-
-# Data preperation for Box plots
+# Box plots
 
 # Clean the environment
 rm(list = ls())
 
-# Read in the data
+# Read in the data (total_basic_box_scores.csv)
 box <- read.csv(here("data", "processed", "total_basic_box_scores.csv"), row.names = "X")
 
 # Separate the seasons
@@ -68,7 +64,7 @@ box_2017 <- box_2017 %>%
 box_2018 <- box_2018 %>%
   select(venue, season, attendance, fga, fg3a, fta, orb, drb, ast, stl, blk, tov, pf, ft_pct)
 
-# rbind the dfs
+# rbind box_2016, box_2017 and box_2018
 box <- rbind(box_2016, box_2017, box_2018)
 
 # Reform box_2019
@@ -112,9 +108,10 @@ box <- rbind(box, box_2019, box_2020)
 
 # Attendance
 
+# Filter box by venue
 box_home <- filter(box, venue == "Home")
 
-# Create a orb ggplot
+# Create an attendance ggplot
 p <- ggplot(box_home, aes(x = season, y = attendance, fill = season))
 
 # Check the range of the plot
@@ -155,7 +152,7 @@ ggsave(here("figs", "fga_box.jpg")) # Code to save figure
 
 # Three- point Field goal attempts per season
 
-# Create a orb ggplot
+# Create a fg3a ggplot
 p <- ggplot(box, aes(x = season, y = fg3a, fill = venue))
 
 # Check the range of the plot
@@ -175,7 +172,7 @@ ggsave(here("figs", "fg3a_box.jpg")) # Code to save figure
 
 # Free throw attempts per season
 
-# Create a orb ggplot
+# Create a fta ggplot
 p <- ggplot(box, aes(x = season, y = fta, fill = venue))
 
 # Check the range of the plot
@@ -191,7 +188,7 @@ p + geom_boxplot() + # tell r that we want a box plot
   guides(fill=guide_legend(title="Venue"))  + # Code to change the title of the legend
   scale_y_continuous(breaks=seq(0,64,10)) # Code to change the min and max values of the y axis (and to determine the distance of the ticks)
 
-ggsave(here("figs", "ft_box.jpg")) # Code to save figure
+ggsave(here("figs", "fta_box.jpg")) # Code to save figure
 
 # Offensive Rebounds per Season
 
@@ -295,7 +292,7 @@ ggsave(here("figs", "tov_box.jpg")) # Code to save figure
 
 # Personal Fouls per Season
 
-# Create a tov ggplot
+# Create a pf ggplot
 p <- ggplot(box, aes(x = season, y = pf, fill = venue))
 
 # Check the range of the plot
@@ -313,7 +310,7 @@ p + geom_boxplot() + # tell r that we want a box plot
 
 ggsave(here("figs", "pf_box.jpg")) # Code to save figure
 
-# Box plot of Free throw percentage per Season (a variable that was not retained)
+# Free throw percentage per Season (a variable that was not retained)
 
 # Create a ft_pct ggplot
 p <- ggplot(box, aes(x = season, y = ft_pct, fill = venue))
@@ -328,8 +325,7 @@ p + geom_boxplot() + # tell r that we want a box plot
 
 ggsave(here("figs", "ft_pct_box.jpg")) # Code to save figure
 
-####----
-# Probability density plots - linear regresion - outcome
+# Probability density plots - linear regression - outcome
 
 # Clean the environment
 rm(list = ls())
@@ -341,7 +337,6 @@ box <- read.csv(here("data", "processed", "total_box_scores_glm_lm.csv"), row.na
 home <- filter(box, venue == "Home")
 
 # Point_difference
-
 p <- ggplot(home, aes(x=point_difference)) 
 
 p + geom_density() +
@@ -349,11 +344,12 @@ p + geom_density() +
        y = "Density")
 
 # The data appears to be normally distributed!
-# Remember a zero point difference is not possible in NBA basketball
+# A zero point difference is not possible in total basic box score data
 # Overtime is played until one team wins
 
 ggsave(here("figs", "point_dif_density.jpg")) # Code to save figure
 
+# Histogram
 p <- ggplot(home, aes(x = point_difference)) 
 
 p + geom_histogram() +
@@ -363,6 +359,31 @@ p + geom_histogram() +
   theme_bw()
 
 ggsave(here("figs", "point_dif_density_his.jpg")) # Code to save figure
+
+# point difference per season boxplot
+
+# Clean the environment
+rm(list = ls())
+
+# Read in the data (total_box_scores_glm_lm.csv)
+box <- read.csv(here("data", "processed", "total_box_scores_glm_lm.csv"), row.names = "X")
+
+# Create a season ggplot
+p <- ggplot(box, aes(x = season, y = point_difference, fill = venue))
+
+# Check the range of the plot
+max(box$point_difference)
+## [1] 61
+min(box$point_difference)
+## [1] -57
+
+p + geom_boxplot() + # tell r that we want a box plot
+  labs(x = "Season",
+       y = "Point Difference") +
+  guides(fill=guide_legend(title="Venue"))  + # Code to change the title of the legend
+  ylim(-57, 61) 
+
+ggsave(here("figs", "point_dif_season.jpg"))
 
 # Probability density plots - linear regression - predictors
 
@@ -410,7 +431,6 @@ plot(density(box$tov), main='Turnovers')
 plot(density(box$pf), main='Personal Fouls') 
 # Normally distributed!
 
-##### ----
 # Scatter plots - linear regression
 
 # Clean the environment
@@ -419,7 +439,7 @@ rm(list = ls())
 # Read in the data (total_box_scores_glm_lm.csv)
 box <- read.csv(here("data", "processed", "total_box_scores_glm_lm.csv"), row.names = "X")
 
-# I need three lists of variables to iterate over
+# I need one lists of variables to iterate over (i.e., predictor variables)
 variables <- c("attendance",
                "fga", 
                "fg3a", 
@@ -431,16 +451,6 @@ variables <- c("attendance",
                "tov", 
                "pf"
                )
-titles <- c("Point Difference Based on Attendance", 
-            "Point Difference Based on Field Goal Attempts",
-            "Point Difference Based on Three-point Field Goal Attempts",
-            "Point Difference Based on Free Throw Attempts", 
-            "Point Difference Based on Offensive Rebounds", 
-            "Point Difference Based on Defensive Rebounds",
-            "Point Difference Based on Steals",
-            "Point Difference Based on Blocks", 
-            "Point Difference Based on Turnovers",
-            "Point Difference Based on Personal Fouls")
 
 # I need plot parameters
 alpha <- .5
@@ -456,38 +466,12 @@ xlab  <- c("Attendance",
            "Turnovers", 
            "Personal Fouls")
 
-for (i in 1:10) {
+for (i in 1:10) { # for loop to create 10 scatter plots (one for each predictor variable (except season))
   p <- ggplot(data = box, 
-              mapping = aes_string(x = variables[i],
+              mapping = aes_string(x = variables[i], # my variables list
                                    y = ha))
   p + geom_point(alpha = alpha) +
     labs(x = xlab[i], y = "Point Difference")
   
-  ggsave(filename = paste("figs/scatter_plot",toString(i),".png",sep=""))
+  ggsave(filename = paste("figs/scatter_plot",toString(i),".png",sep=""), height = 5) # code to save each plot with a different name
 }
-
-#### ---- 
-# boxplot point difference per season
-
-# Clean the environment
-rm(list = ls())
-
-# Read in the data (total_box_scores_glm_lm.csv)
-box <- read.csv(here("data", "processed", "total_box_scores_glm_lm.csv"), row.names = "X")
-
-# Create a season ggplot
-p <- ggplot(box, aes(x = season, y = point_difference, fill = venue))
-
-# Check the range of the plot
-max(box$point_difference)
-## [1] 61
-min(box$point_difference)
-## [1] -57
-
-p + geom_boxplot() + # tell r that we want a box plot
-  labs(x = "Season",
-       y = "Point Difference") +
-  guides(fill=guide_legend(title="Venue"))  + # Code to change the title of the legend
-  ylim(-57, 61) 
-
-ggsave(here("figs", "point_dif_season.jpg"))

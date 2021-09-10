@@ -1,3 +1,6 @@
+# The NBA schedule and results, of basketball-reference.com, are scrapped below
+# for the 2016-17, 2017-18, 2018-19, 2019-20 and 2020-21 seasons
+
 # Packages
 library(rvest)
 library(xml2)
@@ -9,18 +12,20 @@ library(XML)
 library(stringr)
 library(tidyverse)
 
-# The NBA schedule and results tables of basketball-reference.com are scrapped below
-# for the 2016-17, 2017-18, 2018-19, 2019-20 and 2020-21 seasons
-
-# Note one:
-# The NBA box score URLs will also be scrapped 
-# (the NBA box score URLs are utilized to obtain basic box scores 
+# Note:
+# The NBA box score URLs are also scrapped 
+# (the NBA box score URLs are utilized to obtain total basic box scores 
 # (please see basic_box_scores.R for further information))
 
-# Step one: create a years and months variable
+# Step one: Create the NBA schedule and results URLs
 
-# Note two:
-# The years and months variables are utilized for the basketball-reference.com URLs
+# Create a years and a months variable
+
+# Note:
+# The years and months variables are utilized for the NBA schedule and results URLs
+# See for example https://www.basketball-reference.com/leagues/NBA_2017_games-october.html
+# 2017 stands for the 2016-17 season
+# October stands for the month
 
 years <- c(
   "2017", "2017", "2017", "2017", "2017", "2017", "2017", "2017", "2017",
@@ -30,11 +35,21 @@ years <- c(
   "2021", "2021", "2021", "2021", "2021", "2021", "2021", "2021"
 )
 
+# Note: 
+# We need to repeat each year multiple times as each month has a separate URL
+# 2017 = 9
+# 2018 = 9
+# 2019 = 9
+# 2020 = 10
+# 2021 = 8
+
 # Check to see if we have the correct number of years
 table(years)
 ## years
 ## 2017 2018 2019 2020 2021
 ## 9    9    9   10    8
+
+# We have the correct number of years, lets continue. 
 
 months <- c(
   "october", "november", "december", "january", "february",
@@ -49,6 +64,24 @@ months <- c(
   "july"
 )
 
+# Note: 
+# Due to the COVID-19 pandemic two URLs were slightly different 
+# We have october-2019 and october-2020
+# October = 3
+# October-2019 = 1
+# October-2020 = 1
+# November = 4
+# December = 5
+# January = 5
+# February = 5
+# March = 5
+# April = 4
+# May = 4
+# June = 4
+# July = 2
+# August = 1
+# September = 1
+
 # Check to see if we have the correct number of months
 table(months)
 ## months
@@ -57,37 +90,46 @@ table(months)
 ## march          may     november      october october-2019 october-2020    september
 ## 5            4            4            3            1            1            1
 
-# Step two: create schedule and results URLs of 2016-17 - 2020-21
+# We have the correct number of months, lets continue.
 
 # Create a df of months
 df <- as.data.frame(months)
 
-# Add the necessary URL elements
-df$months <- paste0(
-  "https://www.basketball-reference.com/leagues/NBA_", years,
-  "_games-", df$months, ".html"
+# Add the other URL elements
+df$months <- paste0( # paste0 ensures that there are no spaces in our URLs
+  "https://www.basketball-reference.com/leagues/NBA_", years, # years adds in our years variable
+  "_games-", df$months, ".html" # df$months adds in our months 
 )
+
+# Note if you look at the df you can see the NBA schedule and results URLs
+# for the 2016-17, 2017-18, 2018-19, 2019-20 and 2020-21 seasons
+
+# Step two: download the NBA schedule and results HTMLs
 
 # Assign df$months to an object
 urls <- df$months
 
-# Step three: download HTMLs
-for (url in urls) {
+# Download HTMLs
+for (url in urls) {   # the for loop function loops through each of our URLs and downloads them
   download_html(url)
 
   # Create an HTML file list
-  htmls <- list.files("...", pattern = ".html")
+  htmls <- list.files("...", pattern = ".html") # htmls will create a list of all files in our directory that end in .html
 }
 
 # Note this may take some time
+# If you wish to see the progress please click on the files tab
+# You should be able to see each HTML, once it has been downloaded
 
-# Step four: ensure that the HTMLs remain in the predetermined order
+# Once our HTMLs are downloaded, we need to ensure that they are in the correct order
+
+# Step three: ensure that the HTMLs remain in the predetermined order
 
 # Create a new df with solely HTML names (utilize df)
 df_htmls <- df %>%
   mutate_at("months", str_replace, "https://www.basketball-reference.com/leagues/", "")
 
-# Assign the correctly ordered HTMLs to an object
+# Assign the correctly ordered HTML names to an object
 order_htmls <- df_htmls$months
 
 # Obtain the file paths of the order_htmls object
@@ -114,18 +156,18 @@ for (i in 1:45) {
   file.rename(paths[i], numbers_htmls[i])
 }
 
-# Step five: obtain the data
+# Step four: scrape the data
 
 # Create an HTML file list
 html_list <- list.files("...", pattern = ".html")
 
 # Use the function readLines to read all text lines of the HTMLs (and assign them to an object)
-# Note three:
-# This is needed for our schedule and results tables
+# Note:
+# This is needed for our NBA schedule and results tables
 urltxt <- lapply(html_list, function(x) try(readLines(x)))
 
 # Use the function read_html to read all HTMLs (and assign them to an object)
-# Note four:
+# Note:
 # This is needed for our box score URLs
 webpages <- lapply(html_list, function(x) try(read_html(x)))
 
@@ -143,35 +185,35 @@ schedule_results <- lapply(tables, function(i) readHTMLTable(i))
 # Create a df from schedule_results
 schedule_and_results_2016_2020 <- data.table::rbindlist(schedule_results)
 
-# Step six: save schedule_and_results_2016_2020
+# Step five: save schedule_and_results_2016_2020
 write.csv(schedule_and_results_2016_2020, file = here("data", "raw", "schedule_and_results_2016_2020.csv"))
 
-# Step seven: obtain box score URLs
+# Step six: obtain box score URLs
 
 # Create an empty box_score_urls df
 box_score_urls <- data.frame()
 
-# Create a for loop to loop over the HTML (web pages)
+# Create a for loop to loop over the web pages
 for (webpage in webpages) {
 
   # Code to extract box score URLs
   boxscore_links <- webpage %>%
-    html_nodes("table#schedule > tbody > tr > td > a") %>% # this line of code tells r where to look for the box score URLs
+    html_nodes("table#schedule > tbody > tr > td > a") %>% # this line of code tells r where to look for the box score URLs (in each html)
     html_attr("href") %>% # this line of code tells r to retrieve href attributes (each href attribute contains a partial box score URL)
     paste("https://www.basketball-reference.com", ., sep = "") # paste "https://www.basketball-reference.com" in front of the partial box scores to obtain complete box score URLs
 
   # Create a df using boxscore_links
   urls_df <- as.data.frame(boxscore_links)
 
-  # rbind box_score_urls with urls_df (this is necessary to obtain box score URLs for every season and web page)
+  # rbind box_score_urls with urls_df (this is necessary to obtain box score URLs for every season, month and game)
   box_score_urls <- rbind(box_score_urls, urls_df)
   
 }
 
-# Step eight: save box_score_urls
+# Step seven: save box_score_urls
 write.csv(box_score_urls, file = here("data", "raw", "box_score_urls_2016_2020.csv"))
 
-# step nine: clean-up!
+# step eight: clean-up!
 
 # Remove HTMLs from our folder
 for (i in 1:45) {
@@ -262,7 +304,7 @@ rm(list = ls())
 # Read in box_score_urls_2016_2020.csv
 box_score_urls <- read.csv(here("data", "raw", "box_score_urls_2016_2020.csv"), row.names = "X")
 
-# Step one: separate box scores from teams URLs
+# Step one: separate boxscores from teams URLs
 
 # Create a box scores object
 boxscores <- box_score_urls[!grepl(

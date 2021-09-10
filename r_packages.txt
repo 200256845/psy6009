@@ -139,23 +139,6 @@ A BibTeX entry for LaTeX users is
     url = {https://CRAN.R-project.org/package=xml2},
   }
 
-> citation("progressr")
-
-To cite package ‘progressr’ in publications use:
-
-  Henrik Bengtsson (2021). progressr: An Inclusive, Unifying API for Progress Updates. R
-  package version 0.8.0. https://CRAN.R-project.org/package=progressr
-
-A BibTeX entry for LaTeX users is
-
-  @Manual{,
-    title = {progressr: An Inclusive, Unifying API for Progress Updates},
-    author = {Henrik Bengtsson},
-    year = {2021},
-    note = {R package version 0.8.0},
-    url = {https://CRAN.R-project.org/package=progressr},
-  }
-
 > citation("XML")
 
 To cite package ‘XML’ in publications use:
@@ -229,26 +212,6 @@ A BibTeX entry for LaTeX users is
 ATTENTION: This citation information has been auto-generated from the package
 DESCRIPTION file and may need manual editing, see ‘help("citation")’.
 
-> citation("lavaan")
-
-To cite lavaan in publications use:
-
-  Yves Rosseel (2012). lavaan: An R Package for Structural Equation Modeling. Journal of
-  Statistical Software, 48(2), 1-36. URL https://www.jstatsoft.org/v48/i02/.
-
-A BibTeX entry for LaTeX users is
-
-  @Article{,
-    title = {{lavaan}: An {R} Package for Structural Equation Modeling},
-    author = {Yves Rosseel},
-    journal = {Journal of Statistical Software},
-    year = {2012},
-    volume = {48},
-    number = {2},
-    pages = {1--36},
-    url = {https://www.jstatsoft.org/v48/i02/},
-  }
-
 > citation("renv")
 
 To cite package ‘renv’ in publications use:
@@ -268,6 +231,8 @@ A BibTeX entry for LaTeX users is
 
 Warning message:
 In citation("renv") : no date field in DESCRIPTION file of package ‘renv’
+
+> citation("broom")
 
 To cite package ‘broom’ in publications use:
 

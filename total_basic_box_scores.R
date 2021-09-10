@@ -1,3 +1,6 @@
+# The total basic box scores of the 2016-17, 2017-18, 2018-19, 2019-20 and 2020-21 NBA seasons
+# are scrapped below 
+
 # Packages
 library(here)
 library(foreach)
@@ -7,9 +10,7 @@ library(data.table)
 library(dplyr)
 library(lubridate)
 
-# The total basic box scores of the 2016-17, 2017-18, 2018-19, 2019-20 and 2020-21 NBA seasons
-# are scrapped below 
-# Note one: the total basic box scores for the home and away teams are scraped separately 
+# Note: the total basic box scores for the home and away teams are scraped separately 
 
 # Step one: set up your box_score_urls data frame
 
@@ -34,12 +35,12 @@ totals_home <- box_score_urls$totals_home
 
 # Create a foreach loop
 
-foreach(                  # the foreach packages allows us to iterate over multiple lists of the same length simultaneously
+foreach(                  # the foreach packages allows us to iterate over multiple lists (urls and totals_home) of the same length simultaneously
   i = urls,               # the foreach packages is needed as each total basic box score table requires a different html_nodes() input (i.e., a different row in the data)
   j = totals_home
 ) %do% {
   html <- session(i)
-  totals_home <- html_nodes(html, j) %>% html_text()
+  totals_home <- html_nodes(html, j) %>% html_text() # code to tell r we want to extract the text
   
   totals_home <- data.frame(totals_home) # code to create a totals_home df
   totals_home <- as.data.frame(t(totals_home)) # code to convert our totals_home column to a row
@@ -65,12 +66,12 @@ totals_away <- box_score_urls$totals_away
 
 # Create a foreach loop
 
-foreach(                  # the foreach packages allows us to iterate over multiple lists of the same length simultaneously
+foreach(                  # the foreach packages allows us to iterate over multiple lists (urls and totals_away) of the same length simultaneously
   i = urls,               # the foreach packages is needed as each total basic box score table requires a different html_nodes() input (i.e., a different row in the data)
   k = totals_away
 ) %do% {
   html <- session(i)
-  totals_away <- html_nodes(html, k) %>% html_text()
+  totals_away <- html_nodes(html, k) %>% html_text() # code to tell r we want to extract the tex
   
   totals_away <- data.frame(totals_away) # code to create a totals_away df
   totals_away <- as.data.frame(t(totals_away)) # code to convert our totals_away column to a row
@@ -150,13 +151,13 @@ post_bubble <- data.frame(append(post_bubble, c(bubble = "Post-bubble"), after =
 # rbind the dfs 
 box <- rbind(pre_bubble, bubble, post_bubble)
 
-# Lets visualise the attendance data
+# Lets visualise the attendance data before we continue
 
-# Retain the season, attendance and venue data
+# Retain the season, attendance and venue data and create a new df
 box_attendance <- select(box, season, attendance, venue) 
 
 # Filter by home venue
-# Note: we could also have used venue == "Away" - this gives the same data
+# Note: we could also have used venue == "Away" - this gives the same data (we are only looking at attendance)
 box_attendance <- filter(box_attendance, venue == "Home")
 
 # Separate the seasons
@@ -165,6 +166,8 @@ at_box_2017 <- filter(box_attendance, season == "2017-18")
 at_box_2018 <- filter(box_attendance, season == "2018-19")
 at_box_2019 <- filter(box_attendance, season == "2019-20")
 at_box_2020 <- filter(box_attendance, season == "2020-21")
+
+# Plot the seasons
 
 # Season 2016-17
 p <- ggplot(at_box_2016, aes(x=attendance)) 
@@ -206,7 +209,8 @@ p + geom_density() +
 
 ggsave(here("figs", "at_2019-20.jpg")) # Code to save figure
 
-# The density plot demonstrates the impact of the COVID-19 pandemic (i.e., the NBA bubble (in the 2019-20 season))
+# The 2019-20 density plot demonstrates the impact of the COVID-19 pandemic
+# (i.e., the NBA bubble)
 # We have a peak at 0
 # We have a very large peak on the right side - our normal crowd capacity
 
@@ -220,7 +224,7 @@ p + geom_density() +
 
 ggsave(here("figs", "at_2020-21.jpg")) # Code to save figure
 
-# The density plot demonstrate the impact of the COVID-19 pandemic (in the 2020-21 season)
+# The 2020-21 density plot demonstrate the impact of the COVID-19 pandemic
 # We have a peak at 0
 # We have a small peak between 0 and 5000 - as crowd restrictions are slowly lifted
 # We have a very small peak on the right side - our normal crowd capacity
@@ -249,11 +253,14 @@ box_2020 <- filter(box, season == "2020-21")
 max(box_2020$attendance)
 ## [1] 18624
 
-# Separate zero attendance data from data that has at least 10% of the maximum crowd capacity
+# In the 2020-21 season separate zero attendance data from data that has at
+# least 10% of the maximum crowd capacity
 
+# Create a 10% object
 ten_perc <- max(box_2020$attendance)/10
 ## [1] 1862.4
 
+# Retain zero and 10% games
 box_2020 <- box_2020 %>% 
   mutate(zero = case_when(attendance == 0 ~ "True",       # 0 = no crowd
                           attendance > ten_perc ~ "Restricted", # 1 = at least 10% maximum crowd capacity
@@ -267,6 +274,10 @@ spectators <- filter(box_2020, zero == "Restricted")
 # rbind the dfs
 box_2020 <- rbind(absent, spectators)
 
+# Lets re-examine the density plot
+
+# Filter by home venue
+# Note: we could also have used venue == "Away" - this gives the same data (we are only looking at attendance)
 box_2020_attendance <- filter(box_2020, venue == "Home")
 
 # Attendance across the reduced 2020-2021 sample
@@ -277,9 +288,13 @@ p + geom_density() +
        y = "Density") +
   theme_bw() 
 
+# The second peak is now more pronounced.  
+
 ggsave(here("figs", "at_2020-21_new.jpg")) # Code to save figure
 
-# reorder the columns
+# Continue with the reduced sample
+
+# Reorder the box_2020 columns
 box_2020 <- box_2020[, c(1:2, 29, 3:28)]
 
 # rbind box_2016, box_2017, box_2018 and box_2019
@@ -291,6 +306,9 @@ box <- data.frame(append(box, c(zero = "Pre-restrictions"), after = 2))
 # rbind box and box_2020
 box <- rbind(box, box_2020)
 
+# Visualise the reduced data set as a whole
+
+# Filter by home venue (we could also have chosen away, this gives the same result - we are looking at attendance data)
 box_attendance <- filter(box, venue == "Home")
 
 # Attendance across the reduced 2016-2021 sample
@@ -301,17 +319,20 @@ p + geom_density() +
        y = "Density") +
   theme_bw() 
 
+# The density plot clearly displays three peaks
+
 ggsave(here("figs", "at_density_new.jpg")) # Code to save figure
 
 # save box
 write.csv(box, file = here("data", "processed", "total_basic_box_scores.csv"))
 
 #### ----
-# Data preparation for generalised linear models and linear models
+# Data preparation for the linear model and the generalised linear model
 
 # Clean the environment
 rm(list = ls())
 
+# read in total_basic_box_scores.csv
 box <- read.csv(here("data", "processed", "total_basic_box_scores.csv"), row.names = "X")
 
 # Separate the seasons
@@ -321,22 +342,30 @@ box_2018 <- filter(box, season == "2018-19")
 box_2019 <- filter(box, season == "2019-20")
 box_2020 <- filter(box, season == "2020-21")
 
+# filter the 2019 season by bubble and assign bubble and pre-bubble to different dfs
 bubble <- filter(box_2019, bubble == "Bubble")
 pre_covid <- filter(box_2019, bubble == "Pre-bubble")
 
+# Change the season value of the bubble df to 2019-21
 bubble$season[bubble$season=="2019-20"] <- "2019-21"
 
+# rbind pre_covid and bubble
 box_2019 <- rbind(pre_covid, bubble)
 
+# filter the 2020 season by zero and assign true and restricted to different dfs
 absent <- filter(box_2020, zero == "True")
 spectators <- filter(box_2020, zero == "Restricted")
 
+# Change the season value of the absent df to 2019-21
 absent$season[absent$season=="2020-21"] <- "2019-21"
 
+# rbind absent and spectators
 box_2020 <- rbind(absent, spectators)
 
+# rbind the seasons
 box <- rbind(box_2016, box_2017, box_2018, box_2019, box_2020)
 
+# Check if we have the correct data
 table(box$season)
 ## 2016-17 2017-18 2018-19 2019-20 2019-21 2020-21 
 ## 2618    2624    2624    1942    1504     956
