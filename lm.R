@@ -99,24 +99,27 @@ anova(null_model, season, attendance, fta, orb, stl, blk, tov, final_model, hagl
 anova(null_model, hagl)
 summary(hagl)
 
-# Residuals
+# Residuals (point_difference)
 hagl_2 <- lm(point_difference ~ season + attendance + fta + orb + stl + blk + tov + pf + venue, data = box)
 
 summary(hagl_2)
 
 plot(hagl_2)
 
-# Table
+# Summary table (abs_point_dif)
 table_hagl <- tidy(hagl)
 
+# Rename the columns
 names(table_hagl) <- c("Coefficient", "Estimated value", "SE", "t", "p")
 
+# Rename the seasons
 table_hagl$Coefficient[table_hagl$Coefficient=="season2017-18"] <- "2017-18"
 table_hagl$Coefficient[table_hagl$Coefficient=="season2018-19"] <- "2018-19"
 table_hagl$Coefficient[table_hagl$Coefficient=="season2019-20"] <- "2019-20"
 table_hagl$Coefficient[table_hagl$Coefficient=="season2019-21"] <- "2019-21"
 table_hagl$Coefficient[table_hagl$Coefficient=="season2020-21"] <- "2020-21"
 
+# Round the columns down
 table_hagl <- table_hagl %>% 
   mutate_at(vars(p, `Estimated value`, SE), list(~ round(., 5)))
 
@@ -133,7 +136,7 @@ write.table(table_hagl, file = "lm.txt", sep = ",", quote = FALSE, row.names = F
 tapply(box$points, list(box$venue, box$season), mean)
 
 #### ----
-# Average score - see table 3
+# Average score - see table 3 in the paper
 abs_pf_2016 <- 14.40271
 abs_pf_2017 <- -0.42455
 abs_pf_2018 <- 0.54736

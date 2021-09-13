@@ -285,7 +285,7 @@ ha_plot +
 ggsave(here("figs", "covid_ha_zero.jpg")) # Code to save figure
 
 #### ----
-# Figure 34 note calculation
+# Figure 34 note calculation - see the paper
 
 # Pre COVID-19 the average home win percentage was
 (ha_2016 + ha_2017 + ha_2018)/3

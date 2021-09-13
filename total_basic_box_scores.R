@@ -14,22 +14,22 @@ library(lubridate)
 
 # Step one: set up your box_score_urls data frame
 
-# Read in box_score_urls_2016_2020.csv
+# Read in box_score_urls_2016_2020.csv (from the data processed folder)
 box_score_urls <-
   read.csv(here("data", "processed", "box_score_urls_2016_2020.csv"), row.names = "X")
 
-# Tell r where to look for the data (i.e., provide total html_nodes information for the home and the away team)
+# Tell R where to look for the data (i.e., provide total html_nodes information for the home and the away team)
 box_score_urls$totals_home <-
   paste0("table#box-", box_score_urls$home, "-game-basic > tfoot > tr > td")
 box_score_urls$totals_away <-
   paste0("table#box-", box_score_urls$away, "-game-basic > tfoot > tr > td")
 
-# Scraping code for the home team
+# Code for the home team
 
 # Create an empty df for the total basic box scores of the home teams
 basic_home <- data.frame()
 
-# Assign urls and totals_home to their own objects 
+# Assign URLs and totals_home to their own objects 
 urls <- box_score_urls$urls
 totals_home <- box_score_urls$totals_home
 
@@ -40,7 +40,7 @@ foreach(                  # the foreach packages allows us to iterate over multi
   j = totals_home
 ) %do% {
   html <- session(i)
-  totals_home <- html_nodes(html, j) %>% html_text() # code to tell r we want to extract the text
+  totals_home <- html_nodes(html, j) %>% html_text() # code to tell R we want to extract the text
   
   totals_home <- data.frame(totals_home) # code to create a totals_home df
   totals_home <- as.data.frame(t(totals_home)) # code to convert our totals_home column to a row
@@ -56,7 +56,7 @@ names(basic_home) <- c("mp", "fg", "fga", "fg_pct", "fg3", "fg3a", "fg3_pct", "f
 # Save basic_home
 write.csv(basic_home, file = here("data", "raw", "total_basic_box_scores_home.csv"))
 
-# Scraping code for the away team
+# Code for the away team
 
 # Create an empty df for the total basic box scores of the away teams
 basic_away <- data.frame()
@@ -71,7 +71,7 @@ foreach(                  # the foreach packages allows us to iterate over multi
   k = totals_away
 ) %do% {
   html <- session(i)
-  totals_away <- html_nodes(html, k) %>% html_text() # code to tell r we want to extract the tex
+  totals_away <- html_nodes(html, k) %>% html_text() # code to tell R we want to extract the text
   
   totals_away <- data.frame(totals_away) # code to create a totals_away df
   totals_away <- as.data.frame(t(totals_away)) # code to convert our totals_away column to a row
@@ -323,7 +323,7 @@ p + geom_density() +
 
 ggsave(here("figs", "at_density_new.jpg")) # Code to save figure
 
-# save box
+# save box df
 write.csv(box, file = here("data", "processed", "total_basic_box_scores.csv"))
 
 #### ----

@@ -3,7 +3,7 @@ Where did the data come from?
 The data was scrapped from https://www.basketball-reference.com/ through two custom R-scripts (schedule_and_results.R and total_basic_box_scores.R).
 
 What is in the data?
-The data sets contain information on NBA games from the 2016-17, 2017-18, 2018-19, 2019-20 and 2020-21 seasons.
+The data sets contain information (i.e., schedule and results data and total  basic box scores data) on NBA games from the 2016-17, 2017-18, 2018-19, 2019-20 and 2020-21 seasons.
 
 What are the variables in the raw folder?
 
@@ -17,8 +17,8 @@ Vistor/Neutral = name of the away team
 PTS(1) = points scored by the away team 
 Home/Neutral = name of the home team
 PTS(2) = points scored by the home team
-Â(1) = box score text
-Â(2) = overtime
+?(1) = box score text
+?(2) = overtime
 Attend. = attendance
 Notes = game remarks
 
@@ -27,9 +27,9 @@ mp = minutes played
 fg = field goals
 fga = field goal attempts
 fg_pct = field goal percentage
-fg3 = three point field goals
-fg3a = three point field goal attempts
-fg3_pct = three point field goal percentage
+fg3 = three-point field goals
+fg3a = three-point field goal attempts
+fg3_pct = three-point field goal percentage
 ft = free throws
 fta = free throw attempts
 ft_pct = free throw percentage
@@ -78,9 +78,9 @@ venue = Home or Away
 fg = field goals
 fga = field goal attempts
 fg_pct = field goal percentage
-fg3 = three point field goals
-fg3a = three point field goal attempts
-fg3_pct = three point field goal percentage
+fg3 = three-point field goals
+fg3a = three-point field goal attempts
+fg3_pct = three-point field goal percentage
 ft = free throws
 fta = free throw attempts
 ft_pct = free throw percentage
@@ -97,8 +97,10 @@ team = team that the data belongs to
 
 total_box_scores_glm_lm.csv contains the same variables and utilizes the same definitions as total_basic_box_scores.csv
 HOWEVER THERE IS ONE EXCEPTION
-season in total_box_scores_glm_lm.csv consists of 2016-17, 2017-18, 2018-19, 2019-20 (pre COVID-19 games in the 2019-20 season), 
-2019-21 (COVID-19 games that did not have any attendees (includes NBA bubbles games)) and 2020-21 (post COVID-19 games that had at least 10% maximum capacity)
+season in total_box_scores_glm_lm.csv consists of 2016-17, 2017-18, 2018-19, 
+2019-20 (pre COVID-19 games in the 2019-20 season), 
+2019-21 (COVID-19 games that did not have any attendees (includes NBA bubbles games)) 
+and 2020-21 (post COVID-19 games that had at least 10% maximum capacity)
 
 Of interest to the current project are: 
 abs_point_dif, point_difference, home_win, win_percentage,

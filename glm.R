@@ -1,4 +1,4 @@
-# Code of the generalised linear model
+# Code of the generalized linear model
 
 # Packages
 library(here)
@@ -104,18 +104,20 @@ conf_int <- confint(hagl)
 # confidence intervals - odd ratios
 ex_conf_int <- exp(confint(hagl))
 
-# Table
-
+# Summary table
 table_hagl <- tidy(hagl)
 
+# Rename the columns
 names(table_hagl) <- c("Coefficient", "Estimated value", "SE", "z", "p")
 
+# Rename the seasons
 table_hagl$Coefficient[table_hagl$Coefficient=="season2017-18"] <- "2017-18"
 table_hagl$Coefficient[table_hagl$Coefficient=="season2018-19"] <- "2018-19"
 table_hagl$Coefficient[table_hagl$Coefficient=="season2019-20"] <- "2019-20"
 table_hagl$Coefficient[table_hagl$Coefficient=="season2019-21"] <- "2019-21"
 table_hagl$Coefficient[table_hagl$Coefficient=="season2020-21"] <- "2020-21"
 
+# Round the columns down
 table_hagl <- table_hagl %>% 
   mutate_at(vars(p, `Estimated value`, SE), list(~ round(., 5)))
 
@@ -129,9 +131,9 @@ table_hagl <- table_hagl %>%
 write.table(table_hagl, file = "glm.txt", sep = ",", quote = FALSE, row.names = F)
 
 # conf_int table
-
 conf_int <- as.data.frame(conf_int)
 
+# Round the columns down
 conf_int <- conf_int %>% 
   mutate_at(vars(`2.5 %`, `97.5 %`), list(~ round(., 5)))
 
@@ -141,6 +143,7 @@ write.table(conf_int, file = "conf.txt", sep = ",", quote = FALSE, row.names = F
 # ex_conf_int table
 ex_conf_int <- as.data.frame(ex_conf_int)
 
+# Round the columns down
 ex_conf_int  <- ex_conf_int  %>% 
   mutate_at(vars(`2.5 %`, `97.5 %`), list(~ round(., 5)))
 
@@ -148,7 +151,7 @@ ex_conf_int  <- ex_conf_int  %>%
 write.table(ex_conf_int, file = "ex_conf.txt", sep = ",", quote = FALSE, row.names = F)
 
 #### ----
-# Average estimated log odds - see table 4
+# Average estimated log odds - see table 4 in the paper
 odds_2016 <- -0.58638
 odds_2017 <-  0.00860
 odds_2018 <-  0.03107

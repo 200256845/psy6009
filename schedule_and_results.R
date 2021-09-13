@@ -15,7 +15,7 @@ library(tidyverse)
 # Note:
 # The NBA box score URLs are also scrapped 
 # (the NBA box score URLs are utilized to obtain total basic box scores 
-# (please see basic_box_scores.R for further information))
+# (please see total_basic_box_scores.R for further information))
 
 # Step one: Create the NBA schedule and results URLs
 
@@ -65,7 +65,7 @@ months <- c(
 )
 
 # Note: 
-# Due to the COVID-19 pandemic two URLs were slightly different 
+# Due to the COVID-19 pandemic two URLs are slightly different 
 # We have october-2019 and october-2020
 # October = 3
 # October-2019 = 1
@@ -106,7 +106,7 @@ df$months <- paste0( # paste0 ensures that there are no spaces in our URLs
 
 # Step two: download the NBA schedule and results HTMLs
 
-# Assign df$months to an object
+# Assign df$months to an object (urls)
 urls <- df$months
 
 # Download HTMLs
@@ -185,7 +185,7 @@ schedule_results <- lapply(tables, function(i) readHTMLTable(i))
 # Create a df from schedule_results
 schedule_and_results_2016_2020 <- data.table::rbindlist(schedule_results)
 
-# Step five: save schedule_and_results_2016_2020
+# Step five: save schedule_and_results_2016_2020 in the raw data folder
 write.csv(schedule_and_results_2016_2020, file = here("data", "raw", "schedule_and_results_2016_2020.csv"))
 
 # Step six: obtain box score URLs
@@ -198,8 +198,8 @@ for (webpage in webpages) {
 
   # Code to extract box score URLs
   boxscore_links <- webpage %>%
-    html_nodes("table#schedule > tbody > tr > td > a") %>% # this line of code tells r where to look for the box score URLs (in each html)
-    html_attr("href") %>% # this line of code tells r to retrieve href attributes (each href attribute contains a partial box score URL)
+    html_nodes("table#schedule > tbody > tr > td > a") %>% # this line of code tells R where to look for the box score URLs (in each html)
+    html_attr("href") %>% # this line of code tells R to retrieve href attributes (each href attribute contains a partial box score URL)
     paste("https://www.basketball-reference.com", ., sep = "") # paste "https://www.basketball-reference.com" in front of the partial box scores to obtain complete box score URLs
 
   # Create a df using boxscore_links
@@ -210,7 +210,7 @@ for (webpage in webpages) {
   
 }
 
-# Step seven: save box_score_urls
+# Step seven: save box_score_urls in the raw data folder
 write.csv(box_score_urls, file = here("data", "raw", "box_score_urls_2016_2020.csv"))
 
 # step eight: clean-up!
@@ -321,7 +321,7 @@ teams <- box_score_urls[!grepl(
 boxscores <- as.data.frame(boxscores)
 teams <- as.data.frame(teams)
 
-# Step two: separate home and away team urls
+# Step two: separate home and away team URLs
 
 # odd = away team; even = home team)
 row_odd <- seq_len(nrow(teams)) %% 2

@@ -41,7 +41,7 @@ write.table(cor_box, file = "cor_box.txt", sep = ",", quote = FALSE, row.names =
 # DRB are highly correlated with TRB
 # FG are highly correlated with AST
 
-# Box plots
+# Box plots of the chosen predictor variables (and ft_pct)
 
 # Clean the environment
 rm(list = ls())
@@ -56,13 +56,13 @@ box_2018 <- filter(box, season == "2018-19")
 box_2019 <- filter(box, season == "2019-20")
 box_2020 <- filter(box, season == "2020-21")
 
-# Retain the required columns
+# Retain the required columns - for box_2016, box_2017 and box_2018
 box_2016 <- box_2016 %>%
-  select(venue, season, attendance, fga, fg3a, fta, orb, drb, ast, stl, blk, tov, pf, ft_pct)
+  select(venue, season, attendance, fga, fg3a, fta, orb, drb, stl, blk, tov, pf, ft_pct)
 box_2017 <- box_2017 %>%
-  select(venue, season, attendance, fga, fg3a, fta, orb, drb, ast, stl, blk, tov, pf, ft_pct)
+  select(venue, season, attendance, fga, fg3a, fta, orb, drb, stl, blk, tov, pf, ft_pct)
 box_2018 <- box_2018 %>%
-  select(venue, season, attendance, fga, fg3a, fta, orb, drb, ast, stl, blk, tov, pf, ft_pct)
+  select(venue, season, attendance, fga, fg3a, fta, orb, drb, stl, blk, tov, pf, ft_pct)
 
 # rbind box_2016, box_2017 and box_2018
 box <- rbind(box_2016, box_2017, box_2018)
@@ -71,7 +71,7 @@ box <- rbind(box_2016, box_2017, box_2018)
 
 # Retain the required columns
 box_2019 <- box_2019 %>%
-  select(venue, attendance, fga, fg3a, fta, orb, drb, ast, stl, blk, tov, pf, bubble, ft_pct)
+  select(venue, attendance, fga, fg3a, fta, orb, drb, stl, blk, tov, pf, bubble, ft_pct)
 
 # Rename the bubble column to season
 box_2019 <- box_2019 %>% 
@@ -87,7 +87,7 @@ box_2019$season[box_2019$season=="Bubble"] <- "2019-20b" # the b stands for the 
 
 # Retain the required columns
 box_2020 <- box_2020 %>%
-  select(venue, attendance, fga, fg3a, fta, orb, drb, ast, stl, blk, tov, pf, zero, ft_pct)
+  select(venue, attendance, fga, fg3a, fta, orb, drb, stl, blk, tov, pf, zero, ft_pct)
 
 # Rename the zero column to season
 box_2020 <- box_2020 %>% 
@@ -104,7 +104,7 @@ box <- rbind(box, box_2019, box_2020)
 
 # Data is prepared!
 
-# Box plots of the chosen predictor variables
+# Time to code the visualisations!
 
 # Attendance
 
@@ -121,7 +121,7 @@ min(box$attendance)
 ## [1] 0
 
 # Add in the remaining plot details
-p + geom_boxplot() + # tell r that we want a box plot
+p + geom_boxplot() + # tell R that we want a box plot
   labs(x = "Season",
        y = "Attendance") +
   scale_y_continuous(breaks=seq(0,22983,5000)) + # Code to change the min and max values of the y axis (and to determine the distance of the ticks)
@@ -142,7 +142,7 @@ min(box$fga)
 ## [1] 61
 
 # Add in the remaining plot details
-p + geom_boxplot() + # tell r that we want a box plot
+p + geom_boxplot() + # tell R that we want a box plot
   labs(x = "Season",
        y = "Field Goal Attempts") +
   guides(fill=guide_legend(title="Venue"))  + # Code to change the title of the legend
@@ -162,7 +162,7 @@ min(box$fg3a)
 ## [1] 7
 
 # Add in the remaining plot details
-p + geom_boxplot() + # tell r that we want a box plot
+p + geom_boxplot() + # tell R that we want a box plot
   labs(x = "Season",
        y = "Three-Point Field Goal Attempts") +
   guides(fill=guide_legend(title="Venue"))  + # Code to change the title of the legend
@@ -182,7 +182,7 @@ min(box$fta)
 ## [1] 1
 
 # Add in the remaining plot details
-p + geom_boxplot() + # tell r that we want a box plot
+p + geom_boxplot() + # tell R that we want a box plot
   labs(x = "Season",
        y = "Free Throw Attempts") +
   guides(fill=guide_legend(title="Venue"))  + # Code to change the title of the legend
@@ -202,7 +202,7 @@ min(box$orb)
 ## [1] 0
 
 # Add in the remaining plot details
-p + geom_boxplot() + # tell r that we want a box plot
+p + geom_boxplot() + # tell R that we want a box plot
   labs(x = "Season",
        y = "Offensive Rebounds") +
   guides(fill=guide_legend(title="Venue"))  + # Code to change the title of the legend
@@ -222,7 +222,7 @@ min(box$drb)
 ## [1] 18
 
 # Add in the remaining plot details
-p + geom_boxplot() + # tell r that we want a box plot
+p + geom_boxplot() + # tell R that we want a box plot
   labs(x = "Season",
        y = "Defensive Rebounds") +
   guides(fill=guide_legend(title="Venue"))  + # Code to change the title of the legend
@@ -262,7 +262,7 @@ min(box$blk)
 ## [1] 0
 
 # Add in the remaining plot details
-p + geom_boxplot() + # tell r that we want a box plot
+p + geom_boxplot() + # tell R that we want a box plot
   labs(x = "Season",
        y = "Blocks") +
   guides(fill=guide_legend(title="Venue"))  + # Code to change the title of the legend
@@ -282,7 +282,7 @@ min(box$tov)
 ## [1] 1
 
 # Add in the remaining plot details
-p + geom_boxplot() + # tell r that we want a box plot
+p + geom_boxplot() + # tell R that we want a box plot
   labs(x = "Season",
        y = "Turnovers") +
   guides(fill=guide_legend(title="Venue"))  + # Code to change the title of the legend
@@ -302,7 +302,7 @@ min(box$pf)
 ## [1] 6
 
 # Add in the remaining plot details
-p + geom_boxplot() + # tell r that we want a box plot
+p + geom_boxplot() + # tell R that we want a box plot
   labs(x = "Season",
        y = "Personal Fouls") +
   guides(fill=guide_legend(title="Venue"))  + # Code to change the title of the legend
@@ -318,7 +318,7 @@ p <- ggplot(box, aes(x = season, y = ft_pct, fill = venue))
 # Range = 0 - 1
 
 # Add in the remaining plot details
-p + geom_boxplot() + # tell r that we want a box plot
+p + geom_boxplot() + # tell R that we want a box plot
   labs(x = "Season",
        y = "Free Throw Percentage") +
   guides(fill=guide_legend(title="Venue"))  # Code to change the title of the legend
@@ -377,7 +377,7 @@ max(box$point_difference)
 min(box$point_difference)
 ## [1] -57
 
-p + geom_boxplot() + # tell r that we want a box plot
+p + geom_boxplot() + # tell R that we want a box plot
   labs(x = "Season",
        y = "Point Difference") +
   guides(fill=guide_legend(title="Venue"))  + # Code to change the title of the legend
@@ -466,7 +466,7 @@ xlab  <- c("Attendance",
            "Turnovers", 
            "Personal Fouls")
 
-for (i in 1:10) { # for loop to create 10 scatter plots (one for each predictor variable (except season))
+for (i in 1:10) { # for loop to create ten scatter plots (one for each predictor variable (except season))
   p <- ggplot(data = box, 
               mapping = aes_string(x = variables[i], # my variables list
                                    y = ha))
