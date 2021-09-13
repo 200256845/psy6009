@@ -35,6 +35,13 @@ totals_home <- box_score_urls$totals_home
 
 # Create a foreach loop
 
+# WARNING THE FIRST FOREACH LOOP MAY TAKE A LONG TIME
+# IT TOOK +45 MINUTES
+# on a Windows 10 PC 
+# processor: Intel(R) Core(TM) i5-7400
+# RAM: 8 GB (2 X 4GB) DDR4 2133MHz
+# graphic card: NVIDIA GeForce GTX 1060 3GB
+
 foreach(                  # the foreach packages allows us to iterate over multiple lists (urls and totals_home) of the same length simultaneously
   i = urls,               # the foreach packages is needed as each total basic box score table requires a different html_nodes() input (i.e., a different row in the data)
   j = totals_home
@@ -65,6 +72,13 @@ basic_away <- data.frame()
 totals_away <- box_score_urls$totals_away
 
 # Create a foreach loop
+
+# WARNING THE SECOND FOREACH LOOP MAY TAKE A LONG TIME
+# IT TOOK +15 MINUTES
+# on a Windows 10 PC 
+# processor: Intel(R) Core(TM) i5-7400
+# RAM: 8 GB (2 X 4GB) DDR4 2133MHz
+# graphic card: NVIDIA GeForce GTX 1060 3GB
 
 foreach(                  # the foreach packages allows us to iterate over multiple lists (urls and totals_away) of the same length simultaneously
   i = urls,               # the foreach packages is needed as each total basic box score table requires a different html_nodes() input (i.e., a different row in the data)

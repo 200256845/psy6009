@@ -107,6 +107,8 @@ summary(hagl_2)
 plot(hagl_2)
 
 # Summary table (abs_point_dif)
+
+# Create a summary table and assign it to an object 
 table_hagl <- tidy(hagl)
 
 # Rename the columns
